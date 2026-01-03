@@ -3,55 +3,241 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buscador de Vinilos</title>
+<title>Vinyl Finder</title>
 <style>
-  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; padding: 20px; }
-  .app { width: 100%; max-width: 450px; background: #fff; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); padding: 20px; }
-  input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 20px; }
-  ul { list-style: none; padding: 0; }
-  li { display: flex; align-items: center; background: #fafafa; border-radius: 10px; padding: 10px; margin-bottom: 10px; cursor: pointer; }
-  li:hover { background: #f0f0f0; }
-  img { width: 50px; height: 50px; border-radius: 5px; margin-right: 15px; object-fit: cover; }
-  .album-info h3 { font-size: 16px; margin-bottom: 3px; }
-  .album-info p { font-size: 14px; color: #666; }
-  .detail { display: none; margin-top: 20px; padding: 15px; background: #fafafa; border-radius: 10px; }
-  .detail img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
-  .detail h2 { font-size: 20px; margin-bottom: 5px; }
-  .detail p { font-size: 14px; margin-bottom: 10px; line-height: 1.4; }
-  .rating { font-size: 16px; font-weight: bold; display: flex; align-items: center; }
-  .stars { color: gold; margin-left: 10px; }
+  @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;600&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg,#e0e5ec,#f5f5f5);
+    transition: background 0.3s, color 0.3s;
+    color: #333;
+    overflow-x: hidden;
+  }
+
+  body.dark {
+    background: linear-gradient(135deg,#1c1c1e,#2c2c2e);
+    color: #eee;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: all 0.5s ease;
+  }
+
+  .card {
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    background-color: rgba(255,255,255,0.45);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    padding: 25px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  body.dark .card {
+    background-color: rgba(28,28,30,0.45);
+  }
+
+  h1 { font-weight: 600; margin-bottom: 15px; }
+
+  p { font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+
+  button {
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s, color 0.3s, transform 0.2s;
+    margin: 5px;
+  }
+
+  button:hover { opacity: 0.9; transform: scale(1.05); }
+
+  #enterBtn { background-color: #007aff; color: #fff; }
+  #toggleTheme { background-color: #ccc; color: #333; }
+  body.dark #toggleTheme { background-color: #444; color: #eee; }
+
+  #searchContainer {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+  }
+
+  #searchContainer.show {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #searchInput {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    outline: none;
+    transition: 0.3s;
+  }
+
+  #searchInput:focus {
+    border-color: #007aff;
+    box-shadow: 0 0 5px rgba(0,122,255,0.3);
+  }
+
+  ul#results {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+  }
+
+  ul#results li {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.45);
+    backdrop-filter: blur(10px);
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  body.dark ul#results li { background: rgba(28,28,30,0.45); }
+
+  ul#results li:hover {
+    background: rgba(0,122,255,0.2);
+    transform: translateX(5px);
+  }
+
+  ul#results img { width: 45px; height: 45px; border-radius: 8px; margin-right: 10px; object-fit: cover; }
+
+  .album-info h3 { margin: 0; font-size: 14px; }
+  .album-info p { font-size: 12px; color: #555; }
+  body.dark .album-info p { color: #ccc; }
+
+  .detail {
+    display: none;
+    margin-top: 15px;
+    background: rgba(255,255,255,0.45);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.4s ease;
+  }
+
+  .detail.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .detail img { width: 100%; border-radius: 15px; margin-bottom: 10px; }
+  .rating { font-size: 14px; font-weight: bold; display: flex; align-items: center; }
+  .stars { color: gold; margin-left: 5px; transition: all 0.3s ease; }
+
+  #shareBtn {
+    padding: 8px 14px;
+    font-size: 13px;
+    margin-top: 10px;
+    background-color: #ff9500;
+    color: #fff;
+  }
+
+  #shareBtn:hover { transform: scale(1.05); }
+
+  footer {
+    margin-top: 30px;
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  @media(max-width:450px){
+    .card, #searchContainer { padding: 15px; }
+    #searchInput { font-size: 13px; padding: 7px 10px; }
+    ul#results img { width: 40px; height: 40px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="app">
-  <input type="text" id="search" placeholder="Buscar vinilos...">
-  <ul id="results"></ul>
-  <div class="detail" id="detail">
-    <img id="detail-cover" src="" alt="Portada">
-    <h2 id="detail-title"></h2>
-    <p id="detail-artist"></p>
-    <p id="detail-description"></p>
-    <div class="rating">Valoración: <span id="detail-rating"></span> <span class="stars" id="detail-stars"></span></div>
+<div class="container">
+
+  <!-- Landing Page -->
+  <div class="card" id="landing">
+    <h1>Vinyl Finder</h1>
+    <p>Bienvenido a Vinyl Finder, la app minimalista donde puedes buscar tus vinilos favoritos, ver su portada, autor y valoración. ¡Explora tu música favorita de forma rápida y elegante!</p>
+    <button id="enterBtn">Entrar</button>
+    <button id="toggleTheme">Modo Claro/Oscuro</button>
+    <footer>Desarrollado por Manu Merino</footer>
   </div>
+
+  <!-- Buscador -->
+  <div id="searchContainer" class="card">
+    <input type="text" id="searchInput" placeholder="Buscar vinilos...">
+    <ul id="results"></ul>
+    <div class="detail" id="detail">
+      <img id="detailCover" src="" alt="Portada">
+      <h2 id="detailTitle"></h2>
+      <p id="detailArtist"></p>
+      <p id="detailDescription"></p>
+      <div class="rating">Valoración: <span id="detailRating"></span> <span class="stars" id="detailStars"></span></div>
+      <button id="shareBtn">Compartir Disco</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
-const searchInput = document.getElementById('search');
+const landing = document.getElementById('landing');
+const enterBtn = document.getElementById('enterBtn');
+const toggleTheme = document.getElementById('toggleTheme');
+const searchContainer = document.getElementById('searchContainer');
+const searchInput = document.getElementById('searchInput');
 const resultsList = document.getElementById('results');
 const detail = document.getElementById('detail');
-const detailCover = document.getElementById('detail-cover');
-const detailTitle = document.getElementById('detail-title');
-const detailArtist = document.getElementById('detail-artist');
-const detailDescription = document.getElementById('detail-description');
-const detailRating = document.getElementById('detail-rating');
-const detailStars = document.getElementById('detail-stars');
+const detailCover = document.getElementById('detailCover');
+const detailTitle = document.getElementById('detailTitle');
+const detailArtist = document.getElementById('detailArtist');
+const detailDescription = document.getElementById('detailDescription');
+const detailRating = document.getElementById('detailRating');
+const detailStars = document.getElementById('detailStars');
+const shareBtn = document.getElementById('shareBtn');
 
+// Landing -> Buscador
+enterBtn.addEventListener('click', () => {
+  landing.style.display = 'none';
+  searchContainer.classList.add('show');
+  searchInput.focus();
+});
+
+// Modo Claro/Oscuro
+toggleTheme.addEventListener('click', () => document.body.classList.toggle('dark'));
+
+// iTunes API
 searchInput.addEventListener('input', () => {
   const query = searchInput.value.trim();
   if(query.length < 2){
     resultsList.innerHTML = '';
-    detail.style.display = 'none';
+    detail.classList.remove('show');
     return;
   }
   fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=album&limit=10`)
@@ -77,17 +263,29 @@ function displayResults(albums) {
 }
 
 function showDetail(album) {
-  detail.style.display = 'block';
-  detailCover.src = album.artworkUrl100.replace('100x100bb', '500x500bb');
-  detailTitle.textContent = album.collectionName;
-  detailArtist.textContent = album.artistName;
-  detailDescription.textContent = `Género: ${album.primaryGenreName}. Lanzado: ${new Date(album.releaseDate).getFullYear()}`;
-  
-  // Simular puntuación aleatoria entre 7 y 10
-  const rating = (Math.random() * 3 + 7).toFixed(1);
-  detailRating.textContent = rating + '/10';
-  detailStars.textContent = '★'.repeat(Math.round(rating));
+  detail.classList.remove('show');
+  setTimeout(() => {
+    detailCover.src = album.artworkUrl100.replace('100x100bb','500x500bb');
+    detailTitle.textContent = album.collectionName;
+    detailArtist.textContent = album.artistName;
+    detailDescription.textContent = `Género: ${album.primaryGenreName}. Lanzado: ${new Date(album.releaseDate).getFullYear()}`;
+    const rating = (Math.random()*3+7).toFixed(1);
+    detailRating.textContent = rating + '/10';
+    detailStars.textContent = '★'.repeat(Math.round(rating));
+    detail.classList.add('show');
+  }, 100);
 }
+
+// Botón compartir
+shareBtn.addEventListener('click', () => {
+  const text = `${detailTitle.textContent} de ${detailArtist.textContent}\n${detailDescription.textContent}`;
+  const url = detailCover.src;
+  if(navigator.share){
+    navigator.share({ title: detailTitle.textContent, text, url }).catch(err => console.log(err));
+  } else {
+    navigator.clipboard.writeText(`${text}\n${url}`).then(() => alert('Disco copiado al portapapeles'));
+  }
+});
 </script>
 
 </body>

@@ -1,249 +1,94 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buscador de Vinilos</title>
-  <style>
-    /* Reset y base */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background-color: #f5f5f5;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 450px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      padding: 20px;
-    }
-
-    /* Buscador */
-    .search-container {
-      margin-bottom: 20px;
-    }
-
-    .search-container input {
-      width: 100%;
-      padding: 12px 15px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      outline: none;
-      transition: 0.3s;
-    }
-
-    .search-container input:focus {
-      border-color: #999;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-
-    /* Resultados */
-    .results {
-      list-style: none;
-    }
-
-    .results li {
-      display: flex;
-      align-items: center;
-      background: #fafafa;
-      border-radius: 10px;
-      padding: 10px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .results li:hover {
-      background: #f0f0f0;
-    }
-
-    .results img {
-      width: 50px;
-      height: 50px;
-      border-radius: 5px;
-      margin-right: 15px;
-      object-fit: cover;
-    }
-
-    .album-info {
-      flex: 1;
-    }
-
-    .album-info h3 {
-      font-size: 16px;
-      margin-bottom: 3px;
-    }
-
-    .album-info p {
-      font-size: 14px;
-      color: #666;
-    }
-
-    /* Detalle */
-    .detail {
-      display: none;
-      margin-top: 20px;
-      padding: 15px;
-      background: #fafafa;
-      border-radius: 10px;
-    }
-
-    .detail img {
-      width: 100%;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
-
-    .detail h2 {
-      font-size: 20px;
-      margin-bottom: 5px;
-    }
-
-    .detail p {
-      font-size: 14px;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-
-    .rating {
-      font-size: 16px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-    }
-
-    .stars {
-      color: gold;
-      margin-left: 10px;
-    }
-
-    /* Responsive */
-    @media (max-width: 500px) {
-      .app {
-        padding: 15px;
-      }
-
-      .search-container input {
-        padding: 10px;
-        font-size: 14px;
-      }
-
-      .results img {
-        width: 40px;
-        height: 40px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buscador de Vinilos</title>
+<style>
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; padding: 20px; }
+  .app { width: 100%; max-width: 450px; background: #fff; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); padding: 20px; }
+  input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 20px; }
+  ul { list-style: none; padding: 0; }
+  li { display: flex; align-items: center; background: #fafafa; border-radius: 10px; padding: 10px; margin-bottom: 10px; cursor: pointer; }
+  li:hover { background: #f0f0f0; }
+  img { width: 50px; height: 50px; border-radius: 5px; margin-right: 15px; object-fit: cover; }
+  .album-info h3 { font-size: 16px; margin-bottom: 3px; }
+  .album-info p { font-size: 14px; color: #666; }
+  .detail { display: none; margin-top: 20px; padding: 15px; background: #fafafa; border-radius: 10px; }
+  .detail img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
+  .detail h2 { font-size: 20px; margin-bottom: 5px; }
+  .detail p { font-size: 14px; margin-bottom: 10px; line-height: 1.4; }
+  .rating { font-size: 16px; font-weight: bold; display: flex; align-items: center; }
+  .stars { color: gold; margin-left: 10px; }
+</style>
 </head>
 <body>
 
-  <div class="app">
-    <div class="search-container">
-      <input type="text" id="search" placeholder="Buscar vinilos...">
-    </div>
-
-    <ul class="results" id="results"></ul>
-
-    <div class="detail" id="detail">
-      <img id="detail-cover" src="" alt="Portada">
-      <h2 id="detail-title"></h2>
-      <p id="detail-artist"></p>
-      <p id="detail-description"></p>
-      <div class="rating">
-        Valoración: <span id="detail-rating"></span>
-        <span class="stars" id="detail-stars"></span>
-      </div>
-    </div>
+<div class="app">
+  <input type="text" id="search" placeholder="Buscar vinilos...">
+  <ul id="results"></ul>
+  <div class="detail" id="detail">
+    <img id="detail-cover" src="" alt="Portada">
+    <h2 id="detail-title"></h2>
+    <p id="detail-artist"></p>
+    <p id="detail-description"></p>
+    <div class="rating">Valoración: <span id="detail-rating"></span> <span class="stars" id="detail-stars"></span></div>
   </div>
+</div>
 
-  <script>
-    // Base de datos simulada
-    const vinyls = [
-      {
-        title: "The Dark Side of the Moon",
-        artist: "Pink Floyd",
-        description: "Pink Floyd es una influyente banda británica de rock formada en 1965, conocida por sus elaboradas composiciones psicodélicas y progresivas. 'The Dark Side of the Moon' es su álbum más famoso y uno de los más icónicos de la historia del rock, lanzado en 1973.",
-        rating: 9.5,
-        reviews: 850,
-        cover: "https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png"
-      },
-      {
-        title: "Ziggy Stardust",
-        artist: "David Bowie",
-        description: "Ziggy Stardust es uno de los álbumes más emblemáticos de David Bowie, lanzado en 1972. Marcó un hito en el glam rock y la historia de la música con su narrativa y estilo innovador.",
-        rating: 8.8,
-        reviews: 640,
-        cover: "https://upload.wikimedia.org/wikipedia/en/0/0c/ZiggyStardust.jpg"
-      },
-      {
-        title: "Abbey Road",
-        artist: "The Beatles",
-        description: "Abbey Road es el undécimo álbum de estudio de The Beatles, lanzado en 1969. Destaca por su icónica portada y canciones como 'Come Together' y 'Something'.",
-        rating: 9.7,
-        reviews: 900,
-        cover: "https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg"
-      }
-    ];
+<script>
+const searchInput = document.getElementById('search');
+const resultsList = document.getElementById('results');
+const detail = document.getElementById('detail');
+const detailCover = document.getElementById('detail-cover');
+const detailTitle = document.getElementById('detail-title');
+const detailArtist = document.getElementById('detail-artist');
+const detailDescription = document.getElementById('detail-description');
+const detailRating = document.getElementById('detail-rating');
+const detailStars = document.getElementById('detail-stars');
 
-    const searchInput = document.getElementById('search');
-    const resultsList = document.getElementById('results');
-    const detail = document.getElementById('detail');
-    const detailCover = document.getElementById('detail-cover');
-    const detailTitle = document.getElementById('detail-title');
-    const detailArtist = document.getElementById('detail-artist');
-    const detailDescription = document.getElementById('detail-description');
-    const detailRating = document.getElementById('detail-rating');
-    const detailStars = document.getElementById('detail-stars');
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.trim();
+  if(query.length < 2){
+    resultsList.innerHTML = '';
+    detail.style.display = 'none';
+    return;
+  }
+  fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=album&limit=10`)
+    .then(res => res.json())
+    .then(data => displayResults(data.results))
+    .catch(err => console.error(err));
+});
 
-    function displayResults(results) {
-      resultsList.innerHTML = '';
-      results.forEach(vinyl => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <img src="${vinyl.cover}" alt="${vinyl.title}">
-          <div class="album-info">
-            <h3>${vinyl.title}</h3>
-            <p>${vinyl.artist}</p>
-          </div>
-        `;
-        li.addEventListener('click', () => showDetail(vinyl));
-        resultsList.appendChild(li);
-      });
-    }
+function displayResults(albums) {
+  resultsList.innerHTML = '';
+  albums.forEach(album => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <img src="${album.artworkUrl100}" alt="${album.collectionName}">
+      <div class="album-info">
+        <h3>${album.collectionName}</h3>
+        <p>${album.artistName}</p>
+      </div>
+    `;
+    li.addEventListener('click', () => showDetail(album));
+    resultsList.appendChild(li);
+  });
+}
 
-    function showDetail(vinyl) {
-      detail.style.display = 'block';
-      detailCover.src = vinyl.cover;
-      detailTitle.textContent = vinyl.title;
-      detailArtist.textContent = vinyl.artist;
-      detailDescription.textContent = vinyl.description;
-      detailRating.textContent = `${vinyl.rating}/10`;
-      detailStars.textContent = '★'.repeat(Math.round(vinyl.rating));
-    }
-
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      const filtered = vinyls.filter(v => v.title.toLowerCase().includes(query) || v.artist.toLowerCase().includes(query));
-      displayResults(filtered);
-      detail.style.display = 'none';
-    });
-
-    // Mostrar todos al inicio
-    displayResults(vinyls);
-  </script>
+function showDetail(album) {
+  detail.style.display = 'block';
+  detailCover.src = album.artworkUrl100.replace('100x100bb', '500x500bb');
+  detailTitle.textContent = album.collectionName;
+  detailArtist.textContent = album.artistName;
+  detailDescription.textContent = `Género: ${album.primaryGenreName}. Lanzado: ${new Date(album.releaseDate).getFullYear()}`;
+  
+  // Simular puntuación aleatoria entre 7 y 10
+  const rating = (Math.random() * 3 + 7).toFixed(1);
+  detailRating.textContent = rating + '/10';
+  detailStars.textContent = '★'.repeat(Math.round(rating));
+}
+</script>
 
 </body>
 </html>

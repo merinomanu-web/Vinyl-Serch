@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vinyl Finder</title>
 
-<!-- PWA -->
+<!-- PWA manifest mínimo -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#007aff">
+
+<!-- Para iOS -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;600&display=swap');
@@ -68,6 +69,7 @@ footer { margin-top:30px; font-size:12px; opacity:0.6; }
 <body>
 <div class="container">
 
+  <!-- Landing Page -->
   <div class="card" id="landing">
     <h1>Vinyl Finder</h1>
     <p>Bienvenido a Vinyl Finder, busca tus vinilos favoritos y comparte enlaces de Amazon.</p>
@@ -76,6 +78,7 @@ footer { margin-top:30px; font-size:12px; opacity:0.6; }
     <footer>Desarrollado por Manu Merino</footer>
   </div>
 
+  <!-- Buscador -->
   <div id="searchContainer" class="card">
     <button id="homeBtn">🏠 Home</button>
     <input type="text" id="searchInput" placeholder="Buscar vinilos...">
@@ -173,12 +176,6 @@ shareBtn.addEventListener('click',()=>{
     navigator.clipboard.writeText(amazonUrl).then(()=>alert('Link copiado al portapapeles: '+amazonUrl));
   }
 });
-
-// Registrar Service Worker
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(()=>console.log('Service Worker registrado'));
-}
 </script>
 
 </body>

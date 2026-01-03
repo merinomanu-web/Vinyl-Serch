@@ -4,175 +4,78 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vinyl Finder</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#007aff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;600&display=swap');
 
-/* Base */
-body {
-  margin: 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  background: linear-gradient(135deg,#e0e5ec,#f5f5f5);
-  transition: background 0.3s, color 0.3s;
-  color: #333;
-  overflow-x: hidden;
-}
-body.dark {
-  background: linear-gradient(135deg,#1c1c1e,#2c2c2e);
-  color: #eee;
-}
-.container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  transition: all 0.5s ease;
-}
+body { margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; background:linear-gradient(135deg,#e0e5ec,#f5f5f5); transition:0.3s; color:#333; overflow-x:hidden; }
+body.dark { background:linear-gradient(135deg,#1c1c1e,#2c2c2e); color:#eee; }
 
-/* Liquid Glass Card */
-.card {
-  backdrop-filter: blur(15px) saturate(180%);
-  -webkit-backdrop-filter: blur(15px) saturate(180%);
-  background-color: rgba(255,255,255,0.45);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  padding: 25px;
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-body.dark .card { background-color: rgba(28,28,30,0.45); }
+.container { display:flex; flex-direction:column; min-height:100vh; justify-content:center; align-items:center; padding:20px; transition:0.5s; }
 
-h1 { font-weight: 600; margin-bottom: 15px; }
-p { font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+.card { backdrop-filter:blur(15px) saturate(180%); -webkit-backdrop-filter:blur(15px) saturate(180%); background-color:rgba(255,255,255,0.45); border-radius:20px; box-shadow:0 8px 32px rgba(0,0,0,0.1); padding:25px; width:100%; max-width:400px; text-align:center; transition:0.3s; }
+body.dark .card { background-color:rgba(28,28,30,0.45); }
 
-button {
-  padding: 10px 18px;
-  font-size: 14px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s, color 0.3s, transform 0.2s;
-  margin: 5px;
-}
-button:hover { opacity: 0.9; transform: scale(1.05); }
+h1 { font-weight:600; margin-bottom:15px; }
+p { font-size:14px; margin-bottom:20px; line-height:1.5; }
 
-#enterBtn { background-color: #007aff; color: #fff; }
-#toggleTheme { background-color: #ccc; color: #333; }
-body.dark #toggleTheme { background-color: #444; color: #eee; }
-#homeBtn { background-color: #007aff; color: #fff; font-size:16px; padding:6px 12px; }
+button { padding:10px 18px; font-size:14px; border-radius:12px; border:none; cursor:pointer; font-weight:600; transition:0.3s; margin:5px; }
+button:hover { opacity:0.9; transform:scale(1.05); }
 
-/* Buscador Superior */
-#searchContainer {
-  display: none;
-  flex-direction: column;
-  width: 100%;
-  max-width: 400px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease;
-  position: relative;
-}
-#searchContainer.show { display: flex; opacity: 1; transform: translateY(0); }
+#enterBtn { background-color:#007aff; color:#fff; }
+#toggleTheme { background-color:#ccc; color:#333; }
+body.dark #toggleTheme { background-color:#444; color:#eee; }
+#homeBtn { background-color:#007aff; color:#fff; font-size:16px; padding:6px 12px; }
 
-#searchInput {
-  padding: 6px 10px;
-  font-size: 13px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  margin-bottom: 15px;
-  outline: none;
-  transition: 0.3s;
-  width: 100%;
-}
-#searchInput:focus {
-  border-color: #007aff;
-  box-shadow: 0 0 5px rgba(0,122,255,0.3);
-}
+#searchContainer { display:none; flex-direction:column; width:100%; max-width:400px; opacity:0; transform:translateY(20px); transition:0.5s; position:relative; }
+#searchContainer.show { display:flex; opacity:1; transform:translateY(0); }
 
-/* Resultados */
-ul#results {
-  list-style: none;
-  padding: 0;
-  width: 100%;
-}
-ul#results li {
-  display: flex;
-  align-items: center;
-  background: rgba(255,255,255,0.45);
-  backdrop-filter: blur(10px);
-  margin-bottom: 10px;
-  padding: 8px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-body.dark ul#results li { background: rgba(28,28,30,0.45); }
-ul#results li:hover { background: rgba(0,122,255,0.2); transform: translateX(5px); }
+#searchInput { padding:6px 10px; font-size:13px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px; outline:none; transition:0.3s; width:100%; }
+#searchInput:focus { border-color:#007aff; box-shadow:0 0 5px rgba(0,122,255,0.3); }
 
-ul#results img { width: 45px; height: 45px; border-radius: 8px; margin-right: 10px; object-fit: cover; }
-.album-info h3 { margin: 0; font-size: 14px; }
-.album-info p { font-size: 12px; color: #555; }
-body.dark .album-info p { color: #ccc; }
+ul#results { list-style:none; padding:0; width:100%; }
+ul#results li { display:flex; align-items:center; background:rgba(255,255,255,0.45); backdrop-filter:blur(10px); margin-bottom:10px; padding:8px; border-radius:12px; cursor:pointer; transition:0.2s; }
+body.dark ul#results li { background:rgba(28,28,30,0.45); }
+ul#results li:hover { background:rgba(0,122,255,0.2); transform:translateX(5px); }
 
-/* Detalle Disco */
-.detail {
-  display: none;
-  margin-top: 15px;
-  background: rgba(255,255,255,0.45);
-  backdrop-filter: blur(15px);
-  border-radius: 15px;
-  padding: 15px;
-  text-align: left;
-  opacity: 0;
-  transform: translateY(15px);
-  transition: all 0.4s ease;
-}
-.detail.show { display: block; opacity:1; transform:translateY(0);}
-.detail img { width: 100%; border-radius: 15px; margin-bottom: 10px; }
-.rating { font-size: 14px; font-weight: bold; display: flex; align-items: center; }
-.stars { color: gold; margin-left: 5px; transition: all 0.3s ease; }
+ul#results img { width:45px; height:45px; border-radius:8px; margin-right:10px; object-fit:cover; }
+.album-info h3 { margin:0; font-size:14px; }
+.album-info p { font-size:12px; color:#555; }
+body.dark .album-info p { color:#ccc; }
 
-#shareBtn {
-  padding: 8px 14px;
-  font-size: 13px;
-  margin-top: 10px;
-  background-color: #ff9500;
-  color: #fff;
-}
-#shareBtn:hover { transform: scale(1.05); }
+.detail { display:none; margin-top:15px; background:rgba(255,255,255,0.45); backdrop-filter:blur(15px); border-radius:15px; padding:15px; text-align:left; opacity:0; transform:translateY(15px); transition:0.4s; }
+.detail.show { display:block; opacity:1; transform:translateY(0);}
+.detail img { width:100%; border-radius:15px; margin-bottom:10px; }
+.rating { font-size:14px; font-weight:bold; display:flex; align-items:center; }
+.stars { color:gold; margin-left:5px; transition:0.3s; }
 
-footer {
-  margin-top: 30px;
-  font-size: 12px;
-  opacity: 0.6;
-}
+#shareBtn { padding:8px 14px; font-size:13px; margin-top:10px; background-color:#ff9500; color:#fff; }
+#shareBtn:hover { transform:scale(1.05); }
 
-@media(max-width:450px){
-  .card, #searchContainer { padding: 15px; }
-  #searchInput { font-size: 12px; padding: 6px 8px; }
-  ul#results img { width: 40px; height: 40px; }
-  #homeBtn { font-size:14px; padding:5px 10px; }
-}
+footer { margin-top:30px; font-size:12px; opacity:0.6; }
+
+@media(max-width:450px){ .card,#searchContainer { padding:15px; } #searchInput { font-size:12px; padding:6px 8px; } ul#results img { width:40px; height:40px; } #homeBtn { font-size:14px; padding:5px 10px; } }
 </style>
 </head>
-<body>
 
+<body>
 <div class="container">
 
-  <!-- Landing Page -->
   <div class="card" id="landing">
     <h1>Vinyl Finder</h1>
-    <p>Bienvenido a Vinyl Finder, la app minimalista donde puedes buscar tus vinilos favoritos, ver su portada, autor y valoración. ¡Explora tu música favorita de forma rápida y elegante!</p>
+    <p>Bienvenido a Vinyl Finder, busca tus vinilos favoritos y comparte enlaces de Amazon.</p>
     <button id="enterBtn">Entrar</button>
     <button id="toggleTheme">Modo Claro/Oscuro</button>
     <footer>Desarrollado por Manu Merino</footer>
   </div>
 
-  <!-- Buscador -->
   <div id="searchContainer" class="card">
     <button id="homeBtn">🏠 Home</button>
     <input type="text" id="searchInput" placeholder="Buscar vinilos...">
@@ -208,7 +111,7 @@ const shareBtn = document.getElementById('shareBtn');
 
 // Landing -> Buscador
 enterBtn.addEventListener('click', () => {
-  landing.style.display = 'none';
+  landing.style.display='none';
   searchContainer.classList.add('show');
   searchInput.focus();
 });
@@ -216,70 +119,66 @@ enterBtn.addEventListener('click', () => {
 // Home -> Landing
 homeBtn.addEventListener('click', () => {
   searchContainer.classList.remove('show');
-  landing.style.display = 'block';
+  landing.style.display='block';
   detail.classList.remove('show');
   searchInput.value='';
   resultsList.innerHTML='';
 });
 
-// Modo Claro/Oscuro
+// Claro/Oscuro
 toggleTheme.addEventListener('click', () => document.body.classList.toggle('dark'));
 
 // iTunes API
 searchInput.addEventListener('input', () => {
   const query = searchInput.value.trim();
-  if(query.length < 2){
-    resultsList.innerHTML = '';
-    detail.classList.remove('show');
-    return;
-  }
+  if(query.length<2){ resultsList.innerHTML=''; detail.classList.remove('show'); return; }
   fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=album&limit=10`)
-    .then(res => res.json())
-    .then(data => displayResults(data.results))
-    .catch(err => console.error(err));
+    .then(res=>res.json())
+    .then(data=>displayResults(data.results))
+    .catch(err=>console.error(err));
 });
 
-function displayResults(albums) {
-  resultsList.innerHTML = '';
-  albums.forEach(album => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <img src="${album.artworkUrl100}" alt="${album.collectionName}">
-      <div class="album-info">
-        <h3>${album.collectionName}</h3>
-        <p>${album.artistName}</p>
-      </div>
-    `;
-    li.addEventListener('click', () => showDetail(album));
+function displayResults(albums){
+  resultsList.innerHTML='';
+  albums.forEach(album=>{
+    const li=document.createElement('li');
+    li.innerHTML=`<img src="${album.artworkUrl100}" alt="${album.collectionName}">
+      <div class="album-info"><h3>${album.collectionName}</h3><p>${album.artistName}</p></div>`;
+    li.addEventListener('click',()=>showDetail(album));
     resultsList.appendChild(li);
   });
 }
 
-function showDetail(album) {
+function showDetail(album){
   detail.classList.remove('show');
-  setTimeout(() => {
+  setTimeout(()=>{
     detailCover.src = album.artworkUrl100.replace('100x100bb','500x500bb');
     detailTitle.textContent = album.collectionName;
     detailArtist.textContent = album.artistName;
     detailDescription.textContent = `Género: ${album.primaryGenreName}. Lanzado: ${new Date(album.releaseDate).getFullYear()}`;
     const rating = (Math.random()*3+7).toFixed(1);
-    detailRating.textContent = rating + '/10';
+    detailRating.textContent = rating+'/10';
     detailStars.textContent = '★'.repeat(Math.round(rating));
     detail.classList.add('show');
-  }, 100);
+  },100);
 }
 
-// Botón compartir → enlace a Amazon
-shareBtn.addEventListener('click', () => {
-  const query = encodeURIComponent(detailTitle.textContent + " " + detailArtist.textContent);
+// Compartir → link Amazon
+shareBtn.addEventListener('click',()=>{
+  const query = encodeURIComponent(detailTitle.textContent+" "+detailArtist.textContent);
   const amazonUrl = `https://www.amazon.com/s?k=${query}&i=music`;
   if(navigator.share){
-    navigator.share({ title: detailTitle.textContent, text:'Mira este vinilo en Amazon:', url: amazonUrl })
-      .catch(err => console.log(err));
+    navigator.share({title:detailTitle.textContent,text:'Mira este vinilo en Amazon:',url:amazonUrl}).catch(err=>console.log(err));
   } else {
-    navigator.clipboard.writeText(amazonUrl).then(() => alert('Link copiado al portapapeles: ' + amazonUrl));
+    navigator.clipboard.writeText(amazonUrl).then(()=>alert('Link copiado al portapapeles: '+amazonUrl));
   }
 });
+
+// Registrar Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(()=>console.log('Service Worker registrado'));
+}
 </script>
 
 </body>

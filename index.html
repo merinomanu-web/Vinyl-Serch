@@ -5,82 +5,164 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vinyl Finder</title>
 
-<!-- PWA manifest mínimo -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#007aff">
-
-<!-- Para iOS -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;600&display=swap');
 
-body { margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; background:linear-gradient(135deg,#e0e5ec,#f5f5f5); transition:0.3s; color:#333; overflow-x:hidden; }
+body {
+  margin:0;
+  font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  background:linear-gradient(135deg,#e0e5ec,#f5f5f5);
+  color:#333;
+  overflow-x:hidden;
+  transition:0.3s;
+}
 body.dark { background:linear-gradient(135deg,#1c1c1e,#2c2c2e); color:#eee; }
 
 .container { display:flex; flex-direction:column; min-height:100vh; justify-content:center; align-items:center; padding:20px; transition:0.5s; }
 
-.card { backdrop-filter:blur(15px) saturate(180%); -webkit-backdrop-filter:blur(15px) saturate(180%); background-color:rgba(255,255,255,0.45); border-radius:20px; box-shadow:0 8px 32px rgba(0,0,0,0.1); padding:25px; width:100%; max-width:400px; text-align:center; transition:0.3s; }
-body.dark .card { background-color:rgba(28,28,30,0.45); }
+.card {
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  background-color:rgba(255,255,255,0.35);
+  border-radius:25px;
+  padding:30px 20px;
+  width:90%;
+  max-width:360px;
+  text-align:center;
+  box-shadow:0 4px 24px rgba(0,0,0,0.08);
+  transition:0.3s;
+}
+body.dark .card { background-color:rgba(28,28,30,0.35); }
 
-h1 { font-weight:600; margin-bottom:15px; }
-p { font-size:14px; margin-bottom:20px; line-height:1.5; }
+h1 { font-weight:700; font-size:28px; margin-bottom:10px; }
+p { font-size:14px; margin-bottom:20px; line-height:1.4; }
 
-button { padding:10px 18px; font-size:14px; border-radius:12px; border:none; cursor:pointer; font-weight:600; transition:0.3s; margin:5px; }
-button:hover { opacity:0.9; transform:scale(1.05); }
+button {
+  padding:10px 18px;
+  font-size:14px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.2s;
+  background-color:#007aff;
+  color:#fff;
+}
+button:hover { opacity:0.85; transform:scale(1.03); }
 
-#enterBtn { background-color:#007aff; color:#fff; }
-#toggleTheme { background-color:#ccc; color:#333; }
+#toggleTheme {
+  position:absolute;
+  top:15px;
+  right:15px;
+  padding:6px 10px;
+  font-size:12px;
+  background-color:#ccc;
+  color:#333;
+}
 body.dark #toggleTheme { background-color:#444; color:#eee; }
-#homeBtn { background-color:#007aff; color:#fff; font-size:16px; padding:6px 12px; }
 
-#searchContainer { display:none; flex-direction:column; width:100%; max-width:400px; opacity:0; transform:translateY(20px); transition:0.5s; position:relative; }
+#homeBtn {
+  background:none;
+  border:none;
+  font-size:20px;
+  margin-bottom:10px;
+  cursor:pointer;
+  color:#007aff;
+}
+body.dark #homeBtn { color:#0af; }
+
+#searchContainer { display:none; flex-direction:column; width:100%; max-width:400px; opacity:0; transform:translateY(15px); transition:0.4s; }
 #searchContainer.show { display:flex; opacity:1; transform:translateY(0); }
 
-#searchInput { padding:6px 10px; font-size:13px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px; outline:none; transition:0.3s; width:100%; }
-#searchInput:focus { border-color:#007aff; box-shadow:0 0 5px rgba(0,122,255,0.3); }
+#searchInput {
+  padding:6px 10px;
+  font-size:13px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  margin-bottom:15px;
+  outline:none;
+  width:100%;
+}
+#searchInput:focus { border-color:#007aff; box-shadow:0 0 4px rgba(0,122,255,0.2); }
 
-ul#results { list-style:none; padding:0; width:100%; }
-ul#results li { display:flex; align-items:center; background:rgba(255,255,255,0.45); backdrop-filter:blur(10px); margin-bottom:10px; padding:8px; border-radius:12px; cursor:pointer; transition:0.2s; }
-body.dark ul#results li { background:rgba(28,28,30,0.45); }
-ul#results li:hover { background:rgba(0,122,255,0.2); transform:translateX(5px); }
+ul#results { list-style:none; padding:0; margin:0; width:100%; }
+ul#results li {
+  display:flex;
+  align-items:center;
+  background:rgba(255,255,255,0.35);
+  backdrop-filter:blur(10px);
+  padding:6px 10px;
+  margin-bottom:8px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:0.2s;
+}
+body.dark ul#results li { background:rgba(28,28,30,0.35); }
+ul#results li:hover { background:rgba(0,122,255,0.15); }
 
-ul#results img { width:45px; height:45px; border-radius:8px; margin-right:10px; object-fit:cover; }
-.album-info h3 { margin:0; font-size:14px; }
-.album-info p { font-size:12px; color:#555; }
+ul#results img { width:40px; height:40px; border-radius:6px; margin-right:10px; object-fit:cover; }
+.album-info h3 { margin:0; font-size:13px; }
+.album-info p { font-size:11px; color:#555; }
 body.dark .album-info p { color:#ccc; }
 
-.detail { display:none; margin-top:15px; background:rgba(255,255,255,0.45); backdrop-filter:blur(15px); border-radius:15px; padding:15px; text-align:left; opacity:0; transform:translateY(15px); transition:0.4s; }
+.detail {
+  display:none;
+  margin-top:12px;
+  background:rgba(255,255,255,0.35);
+  backdrop-filter:blur(15px);
+  border-radius:20px;
+  padding:15px;
+  text-align:center;
+  opacity:0;
+  transform:translateY(10px);
+  transition:0.3s;
+}
 .detail.show { display:block; opacity:1; transform:translateY(0);}
 .detail img { width:100%; border-radius:15px; margin-bottom:10px; }
-.rating { font-size:14px; font-weight:bold; display:flex; align-items:center; }
-.stars { color:gold; margin-left:5px; transition:0.3s; }
+.rating { font-size:13px; font-weight:600; }
+.stars { color:gold; margin-left:5px; }
 
-#shareBtn { padding:8px 14px; font-size:13px; margin-top:10px; background-color:#ff9500; color:#fff; }
-#shareBtn:hover { transform:scale(1.05); }
+#shareBtn {
+  padding:6px 12px;
+  font-size:13px;
+  margin-top:10px;
+  border-radius:10px;
+  background-color:#ff9500;
+  color:#fff;
+}
+#shareBtn:hover { transform:scale(1.03); }
 
-footer { margin-top:30px; font-size:12px; opacity:0.6; }
+footer { margin-top:20px; font-size:11px; opacity:0.6; }
 
-@media(max-width:450px){ .card,#searchContainer { padding:15px; } #searchInput { font-size:12px; padding:6px 8px; } ul#results img { width:40px; height:40px; } #homeBtn { font-size:14px; padding:5px 10px; } }
+@media(max-width:450px){
+  .card,#searchContainer { padding:20px 15px; }
+  #searchInput { font-size:12px; padding:5px 8px; }
+  ul#results img { width:35px; height:35px; }
+}
 </style>
 </head>
 
 <body>
-<div class="container">
 
-  <!-- Landing Page -->
+<button id="toggleTheme">🌙</button>
+
+<div class="container">
+  <!-- Landing minimalista -->
   <div class="card" id="landing">
     <h1>Vinyl Finder</h1>
-    <p>Bienvenido a Vinyl Finder, busca tus vinilos favoritos y comparte enlaces de Amazon.</p>
+    <p>Encuentra y comparte tus vinilos favoritos de manera sencilla y rápida.</p>
     <button id="enterBtn">Entrar</button>
-    <button id="toggleTheme">Modo Claro/Oscuro</button>
     <footer>Desarrollado por Manu Merino</footer>
   </div>
 
-  <!-- Buscador -->
+  <!-- Buscador minimalista -->
   <div id="searchContainer" class="card">
-    <button id="homeBtn">🏠 Home</button>
+    <button id="homeBtn">🏠</button>
     <input type="text" id="searchInput" placeholder="Buscar vinilos...">
     <ul id="results"></ul>
     <div class="detail" id="detail">
@@ -89,10 +171,9 @@ footer { margin-top:30px; font-size:12px; opacity:0.6; }
       <p id="detailArtist"></p>
       <p id="detailDescription"></p>
       <div class="rating">Valoración: <span id="detailRating"></span> <span class="stars" id="detailStars"></span></div>
-      <button id="shareBtn">Compartir Disco</button>
+      <button id="shareBtn">Compartir</button>
     </div>
   </div>
-
 </div>
 
 <script>

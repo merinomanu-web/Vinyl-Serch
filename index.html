@@ -23,24 +23,36 @@ body {
 }
 body.dark { background:linear-gradient(135deg,#1c1c1e,#2c2c2e); color:#eee; }
 
-.container { display:flex; flex-direction:column; min-height:100vh; justify-content:center; align-items:center; padding:20px; transition:0.5s; }
+.container {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  width:100%;
+  padding:20px;
+  transition:0.5s;
+}
 
 .card {
+  width:90%;
+  max-width:360px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
   backdrop-filter:blur(20px) saturate(180%);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   background-color:rgba(255,255,255,0.35);
   border-radius:25px;
   padding:30px 20px;
-  width:90%;
-  max-width:360px;
-  text-align:center;
   box-shadow:0 4px 24px rgba(0,0,0,0.08);
   transition:0.3s;
 }
 body.dark .card { background-color:rgba(28,28,30,0.35); }
 
 h1 { font-weight:700; font-size:28px; margin-bottom:10px; }
-p { font-size:14px; margin-bottom:20px; line-height:1.4; }
+p { font-size:14px; margin-bottom:20px; line-height:1.4; text-align:center; }
 
 button {
   padding:10px 18px;
@@ -140,7 +152,7 @@ body.dark .album-info p { color:#ccc; }
 footer { margin-top:20px; font-size:11px; opacity:0.6; }
 
 @media(max-width:450px){
-  .card,#searchContainer { padding:20px 15px; }
+  h1 { font-size:24px; }
   #searchInput { font-size:12px; padding:5px 8px; }
   ul#results img { width:35px; height:35px; }
 }
@@ -197,16 +209,21 @@ const shareBtn = document.getElementById('shareBtn');
 enterBtn.addEventListener('click', () => {
   landing.style.display='none';
   searchContainer.classList.add('show');
+  searchInput.value = '';
+  resultsList.innerHTML = '';
+  detail.classList.remove('show');
+  window.scrollTo(0,0);
   searchInput.focus();
 });
 
 // Home -> Landing
 homeBtn.addEventListener('click', () => {
   searchContainer.classList.remove('show');
-  landing.style.display='block';
+  landing.style.display='flex';
+  searchInput.value = '';
+  resultsList.innerHTML = '';
   detail.classList.remove('show');
-  searchInput.value='';
-  resultsList.innerHTML='';
+  window.scrollTo(0,0);
 });
 
 // Claro/Oscuro

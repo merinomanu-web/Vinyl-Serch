@@ -5,176 +5,158 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vinyl Finder</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;600&display=swap');
 
-  body {
-    margin: 0;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: linear-gradient(135deg,#e0e5ec,#f5f5f5);
-    transition: background 0.3s, color 0.3s;
-    color: #333;
-    overflow-x: hidden;
-  }
+/* Base */
+body {
+  margin: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg,#e0e5ec,#f5f5f5);
+  transition: background 0.3s, color 0.3s;
+  color: #333;
+  overflow-x: hidden;
+}
+body.dark {
+  background: linear-gradient(135deg,#1c1c1e,#2c2c2e);
+  color: #eee;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  transition: all 0.5s ease;
+}
 
-  body.dark {
-    background: linear-gradient(135deg,#1c1c1e,#2c2c2e);
-    color: #eee;
-  }
+/* Liquid Glass Card */
+.card {
+  backdrop-filter: blur(15px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  background-color: rgba(255,255,255,0.45);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  padding: 25px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+body.dark .card { background-color: rgba(28,28,30,0.45); }
 
-  .container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    transition: all 0.5s ease;
-  }
+h1 { font-weight: 600; margin-bottom: 15px; }
+p { font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
 
-  .card {
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    background-color: rgba(255,255,255,0.45);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    padding: 25px;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
+button {
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  margin: 5px;
+}
+button:hover { opacity: 0.9; transform: scale(1.05); }
 
-  body.dark .card {
-    background-color: rgba(28,28,30,0.45);
-  }
+#enterBtn { background-color: #007aff; color: #fff; }
+#toggleTheme { background-color: #ccc; color: #333; }
+body.dark #toggleTheme { background-color: #444; color: #eee; }
+#homeBtn { background-color: #007aff; color: #fff; font-size:16px; padding:6px 12px; }
 
-  h1 { font-weight: 600; margin-bottom: 15px; }
+/* Buscador Superior */
+#searchContainer {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+  position: relative;
+}
+#searchContainer.show { display: flex; opacity: 1; transform: translateY(0); }
 
-  p { font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+#searchInput {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+  outline: none;
+  transition: 0.3s;
+  width: 100%;
+}
+#searchInput:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 5px rgba(0,122,255,0.3);
+}
 
-  button {
-    padding: 10px 20px;
-    font-size: 14px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s, color 0.3s, transform 0.2s;
-    margin: 5px;
-  }
+/* Resultados */
+ul#results {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+ul#results li {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(10px);
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+body.dark ul#results li { background: rgba(28,28,30,0.45); }
+ul#results li:hover { background: rgba(0,122,255,0.2); transform: translateX(5px); }
 
-  button:hover { opacity: 0.9; transform: scale(1.05); }
+ul#results img { width: 45px; height: 45px; border-radius: 8px; margin-right: 10px; object-fit: cover; }
+.album-info h3 { margin: 0; font-size: 14px; }
+.album-info p { font-size: 12px; color: #555; }
+body.dark .album-info p { color: #ccc; }
 
-  #enterBtn { background-color: #007aff; color: #fff; }
-  #toggleTheme { background-color: #ccc; color: #333; }
-  body.dark #toggleTheme { background-color: #444; color: #eee; }
+/* Detalle Disco */
+.detail {
+  display: none;
+  margin-top: 15px;
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  padding: 15px;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.4s ease;
+}
+.detail.show { display: block; opacity:1; transform:translateY(0);}
+.detail img { width: 100%; border-radius: 15px; margin-bottom: 10px; }
+.rating { font-size: 14px; font-weight: bold; display: flex; align-items: center; }
+.stars { color: gold; margin-left: 5px; transition: all 0.3s ease; }
 
-  #searchContainer {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    max-width: 400px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.5s ease;
-  }
+#shareBtn {
+  padding: 8px 14px;
+  font-size: 13px;
+  margin-top: 10px;
+  background-color: #ff9500;
+  color: #fff;
+}
+#shareBtn:hover { transform: scale(1.05); }
 
-  #searchContainer.show {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
-  }
+footer {
+  margin-top: 30px;
+  font-size: 12px;
+  opacity: 0.6;
+}
 
-  #searchInput {
-    padding: 8px 12px;
-    font-size: 14px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    margin-bottom: 15px;
-    outline: none;
-    transition: 0.3s;
-  }
-
-  #searchInput:focus {
-    border-color: #007aff;
-    box-shadow: 0 0 5px rgba(0,122,255,0.3);
-  }
-
-  ul#results {
-    list-style: none;
-    padding: 0;
-    width: 100%;
-  }
-
-  ul#results li {
-    display: flex;
-    align-items: center;
-    background: rgba(255,255,255,0.45);
-    backdrop-filter: blur(10px);
-    margin-bottom: 10px;
-    padding: 8px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-  }
-
-  body.dark ul#results li { background: rgba(28,28,30,0.45); }
-
-  ul#results li:hover {
-    background: rgba(0,122,255,0.2);
-    transform: translateX(5px);
-  }
-
-  ul#results img { width: 45px; height: 45px; border-radius: 8px; margin-right: 10px; object-fit: cover; }
-
-  .album-info h3 { margin: 0; font-size: 14px; }
-  .album-info p { font-size: 12px; color: #555; }
-  body.dark .album-info p { color: #ccc; }
-
-  .detail {
-    display: none;
-    margin-top: 15px;
-    background: rgba(255,255,255,0.45);
-    backdrop-filter: blur(15px);
-    border-radius: 15px;
-    padding: 15px;
-    text-align: left;
-    opacity: 0;
-    transform: translateY(15px);
-    transition: all 0.4s ease;
-  }
-
-  .detail.show {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .detail img { width: 100%; border-radius: 15px; margin-bottom: 10px; }
-  .rating { font-size: 14px; font-weight: bold; display: flex; align-items: center; }
-  .stars { color: gold; margin-left: 5px; transition: all 0.3s ease; }
-
-  #shareBtn {
-    padding: 8px 14px;
-    font-size: 13px;
-    margin-top: 10px;
-    background-color: #ff9500;
-    color: #fff;
-  }
-
-  #shareBtn:hover { transform: scale(1.05); }
-
-  footer {
-    margin-top: 30px;
-    font-size: 12px;
-    opacity: 0.6;
-  }
-
-  @media(max-width:450px){
-    .card, #searchContainer { padding: 15px; }
-    #searchInput { font-size: 13px; padding: 7px 10px; }
-    ul#results img { width: 40px; height: 40px; }
-  }
+@media(max-width:450px){
+  .card, #searchContainer { padding: 15px; }
+  #searchInput { font-size: 12px; padding: 6px 8px; }
+  ul#results img { width: 40px; height: 40px; }
+  #homeBtn { font-size:14px; padding:5px 10px; }
+}
 </style>
 </head>
 <body>
@@ -192,6 +174,7 @@
 
   <!-- Buscador -->
   <div id="searchContainer" class="card">
+    <button id="homeBtn">🏠 Home</button>
     <input type="text" id="searchInput" placeholder="Buscar vinilos...">
     <ul id="results"></ul>
     <div class="detail" id="detail">
@@ -211,6 +194,7 @@ const landing = document.getElementById('landing');
 const enterBtn = document.getElementById('enterBtn');
 const toggleTheme = document.getElementById('toggleTheme');
 const searchContainer = document.getElementById('searchContainer');
+const homeBtn = document.getElementById('homeBtn');
 const searchInput = document.getElementById('searchInput');
 const resultsList = document.getElementById('results');
 const detail = document.getElementById('detail');
@@ -227,6 +211,15 @@ enterBtn.addEventListener('click', () => {
   landing.style.display = 'none';
   searchContainer.classList.add('show');
   searchInput.focus();
+});
+
+// Home -> Landing
+homeBtn.addEventListener('click', () => {
+  searchContainer.classList.remove('show');
+  landing.style.display = 'block';
+  detail.classList.remove('show');
+  searchInput.value='';
+  resultsList.innerHTML='';
 });
 
 // Modo Claro/Oscuro
@@ -276,14 +269,15 @@ function showDetail(album) {
   }, 100);
 }
 
-// Botón compartir
+// Botón compartir → enlace a Amazon
 shareBtn.addEventListener('click', () => {
-  const text = `${detailTitle.textContent} de ${detailArtist.textContent}\n${detailDescription.textContent}`;
-  const url = detailCover.src;
+  const query = encodeURIComponent(detailTitle.textContent + " " + detailArtist.textContent);
+  const amazonUrl = `https://www.amazon.com/s?k=${query}&i=music`;
   if(navigator.share){
-    navigator.share({ title: detailTitle.textContent, text, url }).catch(err => console.log(err));
+    navigator.share({ title: detailTitle.textContent, text:'Mira este vinilo en Amazon:', url: amazonUrl })
+      .catch(err => console.log(err));
   } else {
-    navigator.clipboard.writeText(`${text}\n${url}`).then(() => alert('Disco copiado al portapapeles'));
+    navigator.clipboard.writeText(amazonUrl).then(() => alert('Link copiado al portapapeles: ' + amazonUrl));
   }
 });
 </script>
